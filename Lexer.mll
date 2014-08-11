@@ -1,20 +1,7 @@
 {
-  (* Tokens and dependanceies *)
-  type token =
-    | NULL
-    | BOOLVAL of bool
-    | STRING of string
-    | INT of int
-    | FLOAT of float
-    | ID of string
-    | LB
-    | RB
-    | LC
-    | RC
-    | COMMA
-    | COLON
-    | EOF
+  (* Tokens defined in Parser.mly *)
 
+  open Parser   
   open Lexing
   open Common
   open Error
@@ -38,8 +25,8 @@ rule read = parse
   | newline      { next_line lexbuf; read lexbuf }
   | int          { INT (int_of_string (Lexing.lexeme lexbuf)) }
   | float        { FLOAT (float_of_string (Lexing.lexeme lexbuf)) }
-  | "true"       { BOOLVAL(true) }
-  | "false"      { BOOLVAL(false) }
+  | "true"       { TRUE }
+  | "false"      { FALSE }
   | '"'          { read_string (Buffer.create 20) lexbuf }
   | '{'          { LC }
   | '}'          { RC }
