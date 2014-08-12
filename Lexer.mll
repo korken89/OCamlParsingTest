@@ -35,6 +35,7 @@ rule read = parse
   | ':'          { COLON }
   | ','          { COMMA }
   | "//"         { comment lexbuf }
+  | "(*"         { comments 0 lexbuf }
   | eof          { EOF }
   | _            { raise (SyntaxError ("Unexpected character: " ^ Lexing.lexeme lexbuf)) }
 
@@ -47,3 +48,10 @@ and comment = parse
   | newline      { next_line lexbuf; read lexbuf }
   | eof          { EOF }
   | _            { comment lexbuf }
+
+and comments level = parse
+  | "*)"         { if level = 0 then read lexbuf else comments (level-1) lexbuf }
+  | "(*"         { comments (level + 1) lexbuf }
+  | newline      { next_line lexbuf; comments level lexbuf }
+  | _            { comments level lexbuf }
+  | eof          { raise (SyntaxError ("Comment not closed.")) }
