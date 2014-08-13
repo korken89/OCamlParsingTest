@@ -16,20 +16,6 @@ let rec print_hd lst =
   | [] -> ()
   | (str, _) :: tl -> begin print_string (str ^ nl); print_hd tl; end
 
-let json_to_ivt (input : (string * value) list) =
-  let len = List.length input in
-  if len == 3 then
-    let (str1, val1) = List.nth input 0 and
-        (str2, val2) = List.nth input 1 and
-        (str3, val3) = List.nth input 2 in
-    if str1 = "isr_max_priorities" && str2 = "core_isr_vectors" && str3 = "vendor_isr_vectors" then
-      print_string "OK!"
-    else
-      raise (StructureError("The correct objects were not found."))
-  else
-    raise (StructureError ("The number of objects in the array is wrong, expected 3 got " ^
-      (string_of_int len)))
-
 let loop filename =
   let inBuffer = open_in filename in
   let lexbuf = Lexing.from_channel inBuffer in
