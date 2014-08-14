@@ -27,12 +27,15 @@ let loop filename =
       | Some (p) -> begin 
         print_string ("Parsing of " ^ filename ^ " succeeded." ^ nl);
         match p with
-          | Assoc(x) -> json_to_ivt x
+          | Assoc(x) -> let _ = json_to_ivt x in ()
           | _        -> print_string "Error"
         end; 
   with
-    | Lexer.SyntaxError msg -> print_string ("Parsing error: " ^ msg ^ " in " ^ (print_position lexbuf))
-    | Parser.Error -> print_string ("Parsing error in " ^ (print_position lexbuf))
+    | Lexer.SyntaxError msg -> print_string ("Parsing error: " ^ msg ^
+                                             " in " ^ (print_position lexbuf) ^ nl)
+    | Parser.Error -> print_string ("Parsing error in " ^ (print_position lexbuf) ^ nl ^
+                                    "Is there a missplaced comma at the end of a list?" ^ nl)
+    | StructureError msg -> print_string ("Parsing error: " ^ msg ^ nl)
     
 let () =
   let in_file = Sys.argv.(1) in
