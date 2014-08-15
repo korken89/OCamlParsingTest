@@ -2,7 +2,6 @@
 open Common
 open AST
 open ISRTable
-open Lexer
 open Lexing
 open Error
 
@@ -11,11 +10,6 @@ let print_position lexbuf =
   pos.pos_fname ^ ": line " ^ (string_of_int pos.pos_lnum) ^
   ", offset: " ^ (string_of_int (pos.pos_cnum - pos.pos_bol + 1))
 
-let rec print_hd lst =
-  match lst with
-  | [] -> ()
-  | (str, _) :: tl -> begin print_string (str ^ nl); print_hd tl; end
-
 let loop filename =
   let inBuffer = open_in filename in
   let lexbuf = Lexing.from_channel inBuffer in
@@ -23,7 +17,7 @@ let loop filename =
   try 
     let res = Parser.parseVectors Lexer.lexVectors lexbuf in
     match res with
-      | None -> print_string "Not accepted!"
+      | None -> print_string "Nothing read!"
       | Some (p) -> begin 
         print_string ("Parsing of " ^ filename ^ " succeeded." ^ nl);
         let _ = parsed_vectors_to_vt p in ()

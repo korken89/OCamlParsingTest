@@ -32,7 +32,16 @@ obj_fields:
   obj = separated_list(COMMA, obj_field) { obj } ;
   
 obj_field:
-  | id = ID; COLON; v = value  { (id, v)                                                  }
-  | id = INT; COLON; v = value { (string_of_int id, v)                                    }
-  | ID; COLON; err = ID        { raise (SyntaxError ("Unexpected value: '" ^ err ^ "'"))  }
-  | INT; COLON; err = ID       { raise (SyntaxError ("Unexpected value: '" ^ err ^ "'"))  } ;
+  | id = ID; COLON; v = value    { (id, v)                                                           }
+  | id = INT; COLON; v = value   { (string_of_int id, v)                                             }
+  | ID; COLON; err = ID
+  | INT; COLON; err = ID         { raise (SyntaxError ("Unexpected value: '" ^ err ^ "'"))           }
+  | err = not_allowed_id; COLON; { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^ "'")) } ;
+
+not_allowed_id:
+  | s = STRING { "String : \"" ^ s ^ "\"" }
+  | KERNEL     { "kernel" }
+  | RESV       { "reserved" }
+  | OVERRD     { "overridable" }
+  | FREE       { "free" }
+  | USED       { "used" }
