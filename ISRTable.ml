@@ -2,12 +2,40 @@ open Common
 open AST
 open Error
 
-type isr_vector_table = {
+(**
+ISR vector table holder.
+*)
+
+type vector_table = {
   max_priorities : int;
   vector_table : (isr_type * string) list;
 }
 
+(**
+Converts the vector_table to the RTFM format.
 
+@param vt Input vector_table.
+
+@return The converted table.
+*)
+let get_RTFM_vector_table vt = vt.vector_table
+
+(**
+Converts the vector_table to the RTFM format.
+
+@param vt Input vector_table.
+
+@return The converted max priorities.
+*)
+let get_RTFM_max_prio vt = vt.max_priorities
+
+(**
+Converts a value_type to String
+
+@param value Input value.
+
+@return The converted string.
+*)
 let value_type value =
   match value with
     | Assoc(_)     -> "Assoc"
@@ -15,7 +43,14 @@ let value_type value =
     | Int(_)       -> "Int"
     | ISR(_)       -> "ISR"
 
+(**
+Checks the value of isr_max_priorities.
 
+@param prio Input value.
+
+@raise StructureError Exception if there was an error.
+@return The max number of priorities.
+*)
 let check_priorities prio =
   let prio_int = match prio with
     | Int(x) -> x
@@ -26,20 +61,26 @@ let check_priorities prio =
     else
       raise (StructureError("isr_max_priorities error: Expected a positive value, received " ^ (string_of_int prio_int)))
 
+(**
+Converts an Assoc list to the final representation for RTFM.
 
-let val_to_isr err (id, value) =
-  match value with
-    | ISR(x) -> (x, id)
-    | _      -> raise (StructureError(err ^ " error: Expected an ISR, received " ^ value_type value))
+@param err   Error string for the exception.
+@param vecs  Assoc object from parser.
 
-
-let rec assoc_list_to_isr err vecs =
-  match vecs with
-    | []       -> []
-    | hd :: tl -> (val_to_isr err hd) :: (assoc_list_to_isr err tl)
-
-
+@raise StructureError Exception if there was an error.
+@return The max number of priorities.
+*)
 let check_vectors err vec =
+  let val_to_isr err (id, value) =
+    match value with
+      | ISR(x) -> (x, id)
+      | _      -> raise (StructureError(err ^ " error: Expected an ISR, received " ^ value_type value))
+  in 
+  let rec assoc_list_to_isr err vecs =
+    match vecs with
+      | []       -> []
+      | hd :: tl -> (val_to_isr err hd) :: (assoc_list_to_isr err tl)
+  in
   let vec_lst = match vec with
     | Assoc(x) -> x
     | _        -> raise (StructureError(err ^ " error: Expected an Assoc List, received " ^ value_type vec))
@@ -49,14 +90,29 @@ let check_vectors err vec =
     else
       raise (StructureError(err ^ " error: Expected an Assoc list, received empty List."))
 
+(**
+Converts the stack-pointer field to the final representation for RTFM.
 
+@param value  String value.
+
+@raise StructureError Exception if there was an error.
+@return The max number of priorities.
+*)
 let check_stack_pointer value =
   match value with
     | String(str) -> (K, str)
     | _           -> raise (StructureError("stack_end_identifier error: Expected a String, received " ^ value_type value))
 
+(**
+Main function for convering a vectr file to the final representation for RTFM.
 
-let vectors_to_vt (input : (string * value) list) =
+@param value  String value.
+
+@raise StructureError Exception if there was an error.
+@return The max number of priorities.
+*)
+
+let vectors_to_vt input =
   let len = List.length input in
   if len == 4 then
     let (str1, val1) = List.nth input 0 and

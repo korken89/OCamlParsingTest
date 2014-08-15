@@ -31,10 +31,9 @@ let loop filename =
           | _        -> print_string "Error"
         end; 
   with
-    | Lexer.SyntaxError msg -> print_string ("Parsing error: " ^ msg ^
+    | Error.SyntaxError msg -> print_string ("Parsing error: " ^ msg ^
                                              " in " ^ (print_position lexbuf) ^ nl)
-    | Parser.Error -> print_string ("Parsing error in " ^ (print_position lexbuf) ^ nl ^
-                                    "Is there a missplaced comma?" ^ nl)
+    | Parser.Error -> print_string ("Parsing error in " ^ (print_position lexbuf) ^ nl)
     | StructureError msg -> print_string ("Parsing error: " ^ msg ^ nl)
     
 let () =

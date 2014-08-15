@@ -1,6 +1,9 @@
 
 open Common
 
+(**
+ISR type format of the RTFM-core compiler.
+*)
 type isr_type =
   | K (* reserved by the RTFM kernel                *)
   | R (* reserved by ARM                            *) 
@@ -8,6 +11,9 @@ type isr_type =
   | F (* free to use by the application             *)
   | U (* used by the application                    *)
 
+(**
+Value format of the vectors file.
+*)
 type value =
   | Assoc     of (string * value) list
   | String    of string

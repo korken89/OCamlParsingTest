@@ -5,8 +5,6 @@
   open Lexing
   open Common
   open Error
-    
-  exception SyntaxError of string
 }
 
 (* Regular expressions *)
@@ -23,12 +21,13 @@ rule lexVectors = parse
   | white                  { lexVectors lexbuf }
   | newline                { next_line lexbuf; lexVectors lexbuf }
   | int                    { INT (int_of_string (Lexing.lexeme lexbuf)) }
+  | quote (str as s) quote { STRING(s) }
   | "kernel"               { KERNEL }
   | "reserved"             { RESV }
   | "overridable"          { OVERRD }
   | "free"                 { FREE }
   | "used"                 { USED }
-  | quote (str as s) quote { STRING(s) }
+  | id as i                { ID(i) }
   | '{'                    { LC }
   | '}'                    { RC }
   | ':'                    { COLON }
