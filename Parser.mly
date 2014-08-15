@@ -1,7 +1,6 @@
 %token <string> STRING
 %token <int>    INT
-%token <float>  FLOAT
-%token TRUE FALSE NULL LB RB LC RC COMMA COLON EOF
+%token KERNEL RESV OVERRD FREE USED LC RC COMMA COLON EOF
 
 %{
   open AST 
@@ -19,19 +18,16 @@ prog:
 
 value:
   | LC; obj = obj_fields; RC             { Assoc obj    }
-  | LB; vl = list_fields; RB             { ValueList vl }
   | s = STRING                           { String s     }
   | i = INT                              { Int i        }
-  | x = FLOAT                            { Float x      }
-  | TRUE                                 { Bool true    }
-  | FALSE                                { Bool false   }
-  | NULL                                 { Null         } ;
+  | KERNEL                               { ISR K        }
+  | RESV                                 { ISR R        }
+  | OVERRD                               { ISR O        }
+  | FREE                                 { ISR F        }
+  | USED                                 { ISR U        } ;
 
 obj_fields:
   obj = separated_list(COMMA, obj_field) { obj          } ;
   
 obj_field:
   k = STRING; COLON; v = value           { (k, v)       } ;
-
-list_fields:
-  vl = separated_list(COMMA, value)      { vl           } ;

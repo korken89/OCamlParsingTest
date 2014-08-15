@@ -2,63 +2,18 @@ open Common
 open AST
 open Error
 
-type isr_type =
-  | K (* reserved by the RTFM kernel                *)
-  | R (* reserved by ARM                            *) 
-  | O (* overridable but has default implementation *)
-  | F (* free to use by the application             *)
-  | U (* used by the application                    *)
-
-type isr_definition = {
-  name : string;
-  isr_type : isr_type;
-}
-
 type isr_vector_table = {
   max_priorities : int;
-  core_vector_table : isr_definition list;
-  vendor_vector_table : isr_definition list;
+  vector_table : (string * isr_type) list;
 }
-
-
-let string_to_isr_type str =
-  match str with
-    | "kernel"      -> K
-    | "reserved"    -> R
-    | "overridable" -> O
-    | "free"        -> F
-    | "used"        -> U
-    | _             -> raise (StructureError("isr_type error: Expected [kernel|reserved|overridable|free|used], received " ^ str))
-
-
-let isr_type_to_string isr =
-  match isr with
-    | K -> "kernel"
-    | R -> "reserved"
-    | O -> "overridable"
-    | F -> "free"
-    | U -> "used"
-
-
-let isr_definition_to_string isr =
-  isr.name ^ ": " ^ (isr_type_to_string isr.isr_type)
-
-    
-let rec isr_definition_list_to_string isrs =
-  match isrs with
-    | []       -> ""
-    | hd :: tl -> (isr_definition_to_string hd) ^ nl ^ (isr_definition_list_to_string tl)
 
 
 let value_type value =
   match value with
     | Assoc(_)     -> "Assoc"
-    | ValueList(_) -> "List"
     | String(_)    -> "String"
     | Int(_)       -> "Int"
-    | Float(_)     -> "Float"
-    | Bool(_)      -> "Bool"
-    | Null         -> "Null"
+    | ISR(_)       -> "ISR"
 
 
 let check_priorities prio =
@@ -74,8 +29,8 @@ let check_priorities prio =
 
 let val_to_isr err (id, value) =
   match value with
-    | String(x) -> {name = id; isr_type = string_to_isr_type x}
-    | _         ->  raise (StructureError(err ^ " error: Expected a String value, received " ^ value_type value))
+    | ISR(x) -> (id, x)
+    | _      -> raise (StructureError(err ^ " error: Expected an ISR, received " ^ value_type value))
 
 
 let rec assoc_list_to_isr err vecs =
@@ -87,7 +42,7 @@ let rec assoc_list_to_isr err vecs =
 let check_vectors err vec =
   let vec_lst = match vec with
     | Assoc(x) -> x
-    | _        -> raise (StructureError(err ^ " error: Expected an Assoc list, received " ^ value_type vec))
+    | _        -> raise (StructureError(err ^ " error: Expected an Assoc List, received " ^ value_type vec))
   in
     if List.length vec_lst > 0 then
       assoc_list_to_isr err vec_lst
@@ -95,24 +50,33 @@ let check_vectors err vec =
       raise (StructureError(err ^ " error: Expected an Assoc list, received empty List."))
 
 
-let json_to_ivt (input : (string * value) list) =
+let check_stack_pointer value =
+  match value with
+    | String(str) -> (str, K)
+    | _           -> raise (StructureError("stack_end_identifier error: Expected a String, received " ^ value_type value))
+
+
+let vectors_to_ivt (input : (string * value) list) =
   let len = List.length input in
-  if len == 3 then
+  if len == 4 then
     let (str1, val1) = List.nth input 0 and
         (str2, val2) = List.nth input 1 and
-        (str3, val3) = List.nth input 2 in
-    if str1 = "isr_max_priorities" && str2 = "core_isr_vectors" && str3 = "vendor_isr_vectors" then
+        (str3, val3) = List.nth input 2 and
+        (str4, val4) = List.nth input 3 in
+    if str1 = "isr_max_priorities" &&
+       str2 = "stack_end_identifier" &&
+       str3 = "core_isr_vectors" &&
+       str4 = "vendor_isr_vectors" then
       let prio = check_priorities val1 in
-      let core_vectors = check_vectors "core_isr_vectors" val2 in
-      let vendor_vectors = check_vectors "vendor_isr_vectors" val3 in
+      let core_vectors = check_vectors "core_isr_vectors" val3 in
+      let vendor_vectors = check_vectors "vendor_isr_vectors" val4 in
       {
         max_priorities = prio;
-        core_vector_table = core_vectors;
-        vendor_vector_table = vendor_vectors;
+        vector_table = (check_stack_pointer val2) :: core_vectors @ vendor_vectors;
       }
     else
       raise (StructureError("The correct objects were not found."))
   else
-    raise (StructureError ("The number of objects in the vector file is wrong, expected 3 got " ^
+    raise (StructureError ("The number of objects in the vector file is wrong, expected 4 got " ^
       (string_of_int len)))
       

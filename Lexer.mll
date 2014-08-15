@@ -15,26 +15,22 @@ let newline = '\r' | '\n' | "\r\n"
 let id      = ['A'-'Z' 'a'-'z' '_']['0'-'9' 'A'-'Z' 'a'-'z' '_']*  
 let digit   = ['0'-'9']+
 let int     = '-'? ['0'-'9'] ['0'-'9']*
-let frac    = '.' digit*
-let exp     = ['e' 'E'] ['-' '+']? digit+
 let quote   = '"'
 let str     = [^ '"']* 
-let float   = digit* frac exp?
 
 (* Lexing rules *)
 rule read = parse
   | white                  { read lexbuf }
   | newline                { next_line lexbuf; read lexbuf }
   | int                    { INT (int_of_string (Lexing.lexeme lexbuf)) }
-  | float                  { FLOAT (float_of_string (Lexing.lexeme lexbuf)) }
-  | "true"                 { TRUE }
-  | "false"                { FALSE }
-  | "null" | "NULL"        { NULL }
   | quote (str as s) quote { STRING(s) }
+  | "kernel"               { KERNEL }
+  | "reserved"             { RESV }
+  | "overridable"          { OVERRD }
+  | "free"                 { FREE }
+  | "used"                 { USED }
   | '{'                    { LC }
   | '}'                    { RC }
-  | '['                    { LB }
-  | ']'                    { RB }
   | ':'                    { COLON }
   | ','                    { COMMA }
   | "(*"                   { comments 0 lexbuf }
