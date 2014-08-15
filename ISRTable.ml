@@ -4,7 +4,7 @@ open Error
 
 type isr_vector_table = {
   max_priorities : int;
-  vector_table : (string * isr_type) list;
+  vector_table : (isr_type * string) list;
 }
 
 
@@ -29,7 +29,7 @@ let check_priorities prio =
 
 let val_to_isr err (id, value) =
   match value with
-    | ISR(x) -> (id, x)
+    | ISR(x) -> (x, id)
     | _      -> raise (StructureError(err ^ " error: Expected an ISR, received " ^ value_type value))
 
 
@@ -52,11 +52,11 @@ let check_vectors err vec =
 
 let check_stack_pointer value =
   match value with
-    | String(str) -> (str, K)
+    | String(str) -> (K, str)
     | _           -> raise (StructureError("stack_end_identifier error: Expected a String, received " ^ value_type value))
 
 
-let vectors_to_ivt (input : (string * value) list) =
+let vectors_to_vt (input : (string * value) list) =
   let len = List.length input in
   if len == 4 then
     let (str1, val1) = List.nth input 0 and

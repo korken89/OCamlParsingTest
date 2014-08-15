@@ -5,7 +5,8 @@
     (* End of stack identifier from the linker file *)
     "stack_end_identifier":                "&_estack",
 
-    (* Cortex M3/M4 core ISR vectors *)
+    (* Cortex M3/M4 core ISR vectors.
+       A "0" vector represents an unused/reserved vector. *)
     "core_isr_vectors": {
         "Reset_Handler":                   kernel,
         "NMI_Handler":                     overridable,

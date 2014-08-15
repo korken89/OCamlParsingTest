@@ -6,13 +6,13 @@
   open AST 
 %}
 
-%start prog
+%start parseVectors
 
-%type <AST.value option> prog
+%type <AST.value option> parseVectors
 
 %%
 
-prog:
+parseVectors:
   | EOF       { None }
   | v = value { Some v } ;
 

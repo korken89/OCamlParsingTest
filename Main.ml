@@ -21,13 +21,13 @@ let loop filename =
   let lexbuf = Lexing.from_channel inBuffer in
   lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = filename };
   try 
-    let res = Parser.prog Lexer.read lexbuf in
+    let res = Parser.parseVectors Lexer.lexVectors lexbuf in
     match res with
       | None -> print_string "Not accepted!"
       | Some (p) -> begin 
         print_string ("Parsing of " ^ filename ^ " succeeded." ^ nl);
         match p with
-          | Assoc(x) -> let _ = vectors_to_ivt x in ()
+          | Assoc(x) -> let _ = vectors_to_vt x in ()
           | _        -> print_string "Error"
         end; 
   with

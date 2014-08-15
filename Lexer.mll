@@ -19,16 +19,16 @@ let quote   = '"'
 let str     = [^ '"']* 
 
 (* Lexing rules *)
-rule read = parse
-  | white                  { read lexbuf }
-  | newline                { next_line lexbuf; read lexbuf }
+rule lexVectors = parse
+  | white                  { lexVectors lexbuf }
+  | newline                { next_line lexbuf; lexVectors lexbuf }
   | int                    { INT (int_of_string (Lexing.lexeme lexbuf)) }
-  | quote (str as s) quote { STRING(s) }
   | "kernel"               { KERNEL }
   | "reserved"             { RESV }
   | "overridable"          { OVERRD }
   | "free"                 { FREE }
   | "used"                 { USED }
+  | quote (str as s) quote { STRING(s) }
   | '{'                    { LC }
   | '}'                    { RC }
   | ':'                    { COLON }
@@ -38,7 +38,7 @@ rule read = parse
   | _                      { raise (SyntaxError ("Unexpected character: '" ^ Lexing.lexeme lexbuf ^ "'")) }
 
 and comments level = parse
-  | "*)"                   { if level = 0 then read lexbuf else comments (level-1) lexbuf }
+  | "*)"                   { if level = 0 then lexVectors lexbuf else comments (level-1) lexbuf }
   | "(*"                   { comments (level + 1) lexbuf }
   | newline                { next_line lexbuf; comments level lexbuf }
   | _                      { comments level lexbuf }
