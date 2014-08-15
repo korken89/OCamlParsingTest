@@ -104,15 +104,16 @@ let check_stack_pointer value =
     | _           -> raise (StructureError("stack_end_identifier error: Expected a String, received " ^ value_type value))
 
 (**
-Main function for convering a vectr file to the final representation for RTFM.
+Main function for convering a vector file to the final representation for RTFM.
 
-@param value  String value.
+@param in_value  The output from the parser.
 
 @raise StructureError Exception if there was an error.
-@return The max number of priorities.
+@return The finished vector_table.
 *)
-
-let vectors_to_vt input =
+let parsed_vectors_to_vt in_vector =
+  match in_vector with
+    | Assoc(input) -> 
   let len = List.length input in
   if len == 4 then
     let (str1, val1) = List.nth input 0 and
@@ -135,4 +136,5 @@ let vectors_to_vt input =
   else
     raise (StructureError ("The number of objects in the vector file is wrong, expected 4 got " ^
       (string_of_int len)))
+    | _            -> raise (StructureError("The correct structure were not found."))
       

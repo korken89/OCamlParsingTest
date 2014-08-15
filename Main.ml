@@ -26,15 +26,14 @@ let loop filename =
       | None -> print_string "Not accepted!"
       | Some (p) -> begin 
         print_string ("Parsing of " ^ filename ^ " succeeded." ^ nl);
-        match p with
-          | Assoc(x) -> let _ = vectors_to_vt x in ()
-          | _        -> print_string "Error"
+        let _ = parsed_vectors_to_vt p in ()
         end; 
   with
-    | Error.SyntaxError msg -> print_string ("Parsing error: " ^ msg ^
+    | Error.SyntaxError msg -> print_string ("Syntax error: " ^ msg ^
                                              " in " ^ (print_position lexbuf) ^ nl)
-    | Parser.Error -> print_string ("Parsing error in " ^ (print_position lexbuf) ^ nl)
-    | StructureError msg -> print_string ("Parsing error: " ^ msg ^ nl)
+    | Parser.Error -> print_string ("Syntax error in " ^ (print_position lexbuf) ^
+                                    " - Is there a missplaced comma?" ^ nl)
+    | StructureError msg -> print_string ("Structure error: " ^ msg ^ nl)
     
 let () =
   let in_file = Sys.argv.(1) in
