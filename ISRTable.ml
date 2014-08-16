@@ -37,8 +37,8 @@ Pretty prints the vector_table object.
 @return The pretty string.
 *)
 let pretty_print_vector_table vt =
-  let rec vec_str vt = match vt with
-    | [] -> ""
+  let rec vec_str = function
+    | []                -> ""
     | (isr, name) :: tl -> (ist_type_to_string isr) ^ ": " ^ name ^ nl ^ (vec_str tl)
   in
   "Max priorities: " ^ (string_of_int vt.max_priorities) ^ nl ^
@@ -53,10 +53,10 @@ Converts a value_type to String
 *)
 let value_type value =
   match value with
-    | Assoc(_)     -> "Assoc"
-    | String(_)    -> "String"
-    | Int(_)       -> "Int"
-    | ISR(_)       -> "ISR"
+    | Assoc(_)  -> "Assoc"
+    | String(_) -> "String"
+    | Int(_)    -> "Int"
+    | ISR(_)    -> "ISR"
 
 (**
 Checks the value of isr_max_priorities.
