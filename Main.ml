@@ -20,7 +20,8 @@ let loop filename =
       | None -> print_string "Nothing read!"
       | Some (p) -> begin 
         print_string ("Parsing of " ^ filename ^ " succeeded." ^ nl);
-        let _ = parsed_vectors_to_vt p in ()
+        let vt = parsed_vectors_to_vt p in
+          print_string (pretty_print_vector_table vt)
         end; 
   with
     | Error.SyntaxError msg -> print_string ("Syntax error: " ^ msg ^

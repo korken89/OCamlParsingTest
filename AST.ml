@@ -19,3 +19,10 @@ type value =
   | String    of string
   | Int       of int
   | ISR       of isr_type
+
+let ist_type_to_string = function
+  | K -> "K"
+  | R -> "R"
+  | O -> "O"
+  | F -> "F"
+  | U -> "U"
