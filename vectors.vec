@@ -13,7 +13,7 @@
         MemManage_Handler:             overridable,
         BusFault_Handler:              overridable,
         UsageFault_Handler:            overridable,
-        0a:                             reserved,
+        0:                             reserved,
         0:                             reserved,
         0:                             reserved,
         0:                             reserved,
