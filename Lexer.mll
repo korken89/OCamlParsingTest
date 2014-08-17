@@ -8,19 +8,23 @@
 }
 
 (* Regular expressions *)
-let white   = [' ' '\t']+
-let newline = '\r' | '\n' | "\r\n"
-let id      = ['A'-'Z' 'a'-'z' '_']['0'-'9' 'A'-'Z' 'a'-'z' '_']*  
-let digit   = ['0'-'9']+
-let int     = '-'? ['0'-'9'] ['0'-'9']*
-let quote   = '"'
-let str     = [^ '"']* 
+let white     = [' ' '\t']+
+let newline   = '\r' | '\n' | "\r\n"
+let id        = ['A'-'Z' 'a'-'z' '_']['0'-'9' 'A'-'Z' 'a'-'z' '_']*  
+let digit     = ['0'-'9']+
+let hex_digit = ['0'-'9' 'a'-'f' 'A'-'F']+
+let bin_digit = ['0'-'1']+
+let int       = '-'? digit
+let hex       = "0x" hex_digit  
+let binary    = "0b" bin_digit
+let quote     = '"'
+let str       = [^ '"']* 
 
 (* Lexing rules *)
 rule lexVectors = parse
   | white                  { lexVectors lexbuf                                                             }
   | newline                { next_line lexbuf; lexVectors lexbuf                                           }
-  | int                    { INT (int_of_string (Lexing.lexeme lexbuf))                                    }
+  | int | hex | binary     { INT (int_of_string (Lexing.lexeme lexbuf))                                    }
   | quote (str as s) quote { STRING (s)                                                                    }
   | "kernel"               { KERNEL                                                                        }
   | "reserved"             { RESV                                                                          }

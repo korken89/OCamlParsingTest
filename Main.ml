@@ -21,7 +21,7 @@ let loop filename =
       | Some (p) -> begin 
         print_string ("Parsing of " ^ filename ^ " succeeded." ^ nl);
         let vt = parsed_vectors_to_vt p in
-          print_string (pretty_print_vector_table vt)
+          print_string (nl ^ (pretty_print_vector_table vt))
         end; 
   with
     | Error.SyntaxError msg -> print_string ("Syntax error: " ^ msg ^
