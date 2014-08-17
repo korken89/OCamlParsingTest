@@ -1,5 +1,5 @@
 {
-    (* Supports both HEX, INT and binary values *)
+    (* Supports HEX, INT and binary values *)
 
     (* Maximum number of priorities for Cortex M3/M4 *)
     isr_max_priorities:                32,
