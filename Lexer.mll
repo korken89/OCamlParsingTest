@@ -42,8 +42,8 @@ rule lexVectors = parse
   | _                      { raise (SyntaxError ("Unexpected character: '" ^ Lexing.lexeme lexbuf ^ "'"))  }
 
 and comments level = parse
-  | "*)"                   { if level = 0 then lexVectors lexbuf else comments (level-1) lexbuf }
-  | "(*"                   { comments (level + 1) lexbuf                                        }
-  | newline                { next_line lexbuf; comments level lexbuf                            }
-  | _                      { comments level lexbuf                                              }
-  | eof                    { raise (SyntaxError ("Comment not closed."))                        }
+  | "*)"                   { if level = 0 then lexVectors lexbuf else comments (level - 1) lexbuf }
+  | "(*"                   { comments (level + 1) lexbuf                                          }
+  | newline                { next_line lexbuf; comments level lexbuf                              }
+  | _                      { comments level lexbuf                                                }
+  | eof                    { raise (SyntaxError ("Comment not closed."))                          }

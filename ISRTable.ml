@@ -3,15 +3,6 @@ open AST
 open Error
 
 (**
-ISR vector table holder.
-*)
-
-type vector_table = {
-  max_priorities : int;
-  vector_table : (isr_type * string) list;
-}
-
-(**
 Converts the vector_table to the RTFM format.
 
 @param vt Input vector_table.
