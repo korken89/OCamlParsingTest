@@ -1,7 +1,7 @@
 {
   (* Tokens defined in Parser.mly *)
 
-  open Parser   
+  open VectorParser   
   open Lexing
   open Common
   open Error
