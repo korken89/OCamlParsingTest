@@ -56,12 +56,14 @@ get_vectors:
   ;  
   
 get_vector:
-  | id = ID; COLON; v = value   { (v, id)                                                           }
-  | id = INT; COLON; v = value  { (v, string_of_int id)                                             }
-  | ID; COLON; err = na_vector
-  | INT; COLON; err = na_vector { raise (SyntaxError ("Unexpected value: '" ^ err ^ "'"))           }
-  | err = na_id; COLON          { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^ "'")) }
+  | id = get_id; COLON; v = value  { (v, id)                                                      }
+  | get_id; COLON; err = na_vector { raise (SyntaxError ("Unexpected value: '" ^ err ^ "'"))      }
+  | err = na_id; COLON             { raise (SyntaxError ("Unexpected identifier: '" ^ err ^ "'")) }
   ;
+
+get_id:
+  | id = ID;  { id               }
+  | id = INT; { string_of_int id }
 
 value:
   | KERNEL { K }
