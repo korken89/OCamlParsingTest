@@ -28,35 +28,39 @@ base_structure:
   ;
 
 get_prio:
-  | PRIO; COLON; pri = INT                            { pri                                                                         }
-  | err = not_allowed_mid; COLON { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^ "', expected 'isr_max_priorities'")) }
+  | PRIO; COLON; pri = INT { pri                                                         }
+  | err = na_mid; COLON    { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^
+                                                 "', expected 'isr_max_priorities'"))    }
   ;
 
 get_stackid:
-  | STACK_ID; COLON; sid = STRING                     { (K, sid)                                                                      }
-  | err = not_allowed_mid; COLON { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^ "', expected 'stack_end_identifier'")) }
+  | STACK_ID; COLON; sid = STRING { (K, sid)                                                    }
+  | err = na_mid; COLON           { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^
+                                                        "', expected 'stack_end_identifier'"))  }
   ;
 
 get_corev:
-  | CORE_VECTORS; COLON; LC; vecs = get_vectors; RC   { vecs                                                                      }
-  | err = not_allowed_mid; COLON { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^ "', expected 'core_isr_vectors'")) }
+  | CORE_VECTORS; COLON; LC; vecs = get_vectors; RC { vecs                                                        }
+  | err = na_mid; COLON                             { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^
+                                                                          "', expected 'core_isr_vectors'"))      }
   ;
 
 get_vendorv:
-  | VENDOR_VECTORS; COLON; LC; vecs = get_vectors; RC { vecs                                                                        }
-  | err = not_allowed_mid; COLON { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^ "', expected 'vendor_isr_vectors'")) }
+  | VENDOR_VECTORS; COLON; LC; vecs = get_vectors; RC { vecs                                                        }
+  | err = na_mid; COLON                               { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^
+                                                                            "', expected 'vendor_isr_vectors'"))    }
   ;
 
 get_vectors:
-  | vecs = separated_list(COMMA, get_vector)          { vecs }
+  | vecs = separated_list(COMMA, get_vector) { vecs }
   ;  
   
 get_vector:
   | id = ID; COLON; v = value   { (v, id)                                                           }
   | id = INT; COLON; v = value  { (v, string_of_int id)                                             }
-  | ID; COLON; err = ID
-  | INT; COLON; err = ID        { raise (SyntaxError ("Unexpected value: '" ^ err ^ "'"))           }
-  | err = not_allowed_id; COLON { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^ "'")) }
+  | ID; COLON; err = na_vector
+  | INT; COLON; err = na_vector { raise (SyntaxError ("Unexpected value: '" ^ err ^ "'"))           }
+  | err = na_id; COLON          { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^ "'")) }
   ;
 
 value:
@@ -67,22 +71,22 @@ value:
   | USED   { U }
   ;
 
-not_allowed_id:
-  | s = STRING { "String : \"" ^ s ^ "\"" }
-  | KERNEL     { "kernel"                 }
-  | RESV       { "reserved"               }
-  | OVERRD     { "overridable"            }
-  | FREE       { "free"                   }
-  | USED       { "used"                   }
-  ;
-  
-not_allowed_mid:
+na_vector:
   | s = STRING { s               }
   | id = ID    { id              }
   | i = INT    { string_of_int i }
-  | KERNEL     { "kernel"        }
-  | RESV       { "reserved"      }
-  | OVERRD     { "overridable"   }
-  | FREE       { "free"          }
-  | USED       { "used"          }
+  ;
+
+na_id:
+  | s = STRING { "String: \"" ^ s ^ "\"" }
+  | KERNEL     { "kernel"                }
+  | RESV       { "reserved"              }
+  | OVERRD     { "overridable"           }
+  | FREE       { "free"                  }
+  | USED       { "used"                  }
+  ;
+  
+na_mid:
+  | id = ID    { id }
+  | na = na_id { na }
   ;  
