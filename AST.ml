@@ -20,26 +20,22 @@ type value =
   | Int    of int
   | ISR    of isr_type
 
-type vector_base =
-  | AssocPrio    of int
-  | AssocStack   of string
-  | AssocCoreVec of (isr_type * string) list
-  | AssocVendVec of (isr_type * string) list
-
-type top =
-  | Assoc of (vector_base list)
-
 (**
 ISR vector table holder.
 *)
-
 type vector_table = {
   max_priorities : int;
   vector_table : (isr_type * string) list;
 }
 
+(**
+Converts ISR type to a string.
 
-let ist_type_to_string = function
+@param Input isr_type.
+
+@return The converted string.
+*)
+let isr_type_to_string = function
   | K -> "K"
   | R -> "R"
   | O -> "O"
