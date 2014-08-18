@@ -20,7 +20,6 @@ type value =
   | Int    of int
   | ISR    of isr_type
 
-(*
 type vector_base =
   | AssocPrio    of int
   | AssocStack   of string
@@ -29,7 +28,6 @@ type vector_base =
 
 type top =
   | Assoc of (vector_base list)
-*)
 
 (**
 ISR vector table holder.

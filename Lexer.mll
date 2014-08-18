@@ -26,6 +26,10 @@ rule lexVectors = parse
   | newline                { next_line lexbuf; lexVectors lexbuf                                           }
   | int | hex | binary     { INT (int_of_string (Lexing.lexeme lexbuf))                                    }
   | quote (str as s) quote { STRING (s)                                                                    }
+  | "isr_max_priorities"   { PRIO                                                                          }
+  | "stack_end_identifier" { STACK_ID                                                                      }
+  | "core_isr_vectors"     { CORE_VECTORS                                                                  }
+  | "vendor_isr_vectors"   { VENDOR_VECTORS                                                                }
   | "kernel"               { KERNEL                                                                        }
   | "reserved"             { RESV                                                                          }
   | "overridable"          { OVERRD                                                                        }

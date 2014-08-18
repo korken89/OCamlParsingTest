@@ -1,4 +1,3 @@
-{
     (* Supports hex, integer and binary values *)
 
     (* Maximum number of priorities for Cortex M3/M4 *)
