@@ -35,6 +35,7 @@ get_prio:
 
 get_stackid:
   | STACK_ID; COLON; sid = STRING { (K, sid)                                                    }
+  | STACK_ID; COLON; sid = ID     { (K, sid)                                                    }
   | err = na_mid; COLON           { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^
                                                         "', expected 'stack_end_identifier'"))  }
   ;

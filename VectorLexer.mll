@@ -17,15 +17,12 @@ let bin_digit = ['0'-'1']+
 let int       = '-'? digit
 let hex       = "0x" hex_digit  
 let binary    = "0b" bin_digit
-let quote     = '"'
-let str       = [^ '"']* 
 
 (* Lexing rules *)
 rule lexVectors = parse
   | white                  { lexVectors lexbuf                                                             }
   | newline                { next_line lexbuf; lexVectors lexbuf                                           }
   | int | hex | binary     { INT (int_of_string (Lexing.lexeme lexbuf))                                    }
-  | quote (str as s) quote { STRING (s)                                                                    }
   | "isr_max_priorities"   { PRIO                                                                          }
   | "stack_end_identifier" { STACK_ID                                                                      }
   | "core_isr_vectors"     { CORE_VECTORS                                                                  }
@@ -36,6 +33,7 @@ rule lexVectors = parse
   | "free"                 { FREE                                                                          }
   | "used"                 { USED                                                                          }
   | id as i                { ID (i)                                                                        }
+  | ('&'? id as s)         { STRING (s)                                                                    }
   | int id                 { raise (SyntaxError ("Unexpected identifier: '" ^ Lexing.lexeme lexbuf ^ "'")) }
   | '{'                    { LC                                                                            }
   | '}'                    { RC                                                                            }

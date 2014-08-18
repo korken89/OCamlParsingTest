@@ -4,7 +4,7 @@
 isr_max_priorities:                32,
 
 (* End of stack identifier from the linker file *)
-stack_end_identifier:              "&_estack",
+stack_end_identifier:              &_estack,
 
 (* Cortex M3/M4 core ISR vectors. *)
 core_isr_vectors: {
