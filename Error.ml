@@ -1,5 +1,3 @@
-open Common
-
 (**
 Syntax Error definition
 *)

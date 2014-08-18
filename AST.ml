@@ -1,5 +1,3 @@
-open Common
-
 (**
 ISR type format of the RTFM-core compiler.
 *)

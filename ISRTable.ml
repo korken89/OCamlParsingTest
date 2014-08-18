@@ -1,6 +1,4 @@
-open Common
 open AST
-open Error
 
 (**
 Converts the vector_table to the RTFM format.

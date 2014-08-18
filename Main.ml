@@ -1,6 +1,5 @@
 open Common
 open AST
-open ISRTable
 open Lexing
 
 let print_position lexbuf =
@@ -15,10 +14,8 @@ let loop filename =
   try 
     let res = VectorParser.parseVectors VectorLexer.lexVectors lexbuf in
     match res with
-      | None -> print_string "Nothing read!"
-      | Some (p) -> begin 
-        print_string ("Parsing of " ^ filename ^ " succeeded." ^ nl);
-        end; 
+      | None     -> print_string "Nothing!"
+      | Some (p) -> print_string ("Parsing of " ^ filename ^ " succeeded." ^ nl);
   with
     | Error.SyntaxError msg -> print_string ("Syntax error: " ^ msg ^
                                              " in " ^ (print_position lexbuf) ^ nl)
