@@ -7,8 +7,6 @@
 %{
   open AST 
   open Error
-  
-  
 %}
 
 %start <AST.vector_table option> parseVectors

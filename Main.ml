@@ -1,9 +1,7 @@
-
 open Common
 open AST
 open ISRTable
 open Lexing
-open Error
 
 let print_position lexbuf =
   let pos = lexbuf.lex_curr_p in
@@ -26,7 +24,6 @@ let loop filename =
                                              " in " ^ (print_position lexbuf) ^ nl)
     | VectorParser.Error    -> print_string ("Syntax error in " ^ (print_position lexbuf) ^
                                     " - Is there a missplaced comma?" ^ nl)
-    | StructureError msg    -> print_string ("Structure error: " ^ msg ^ nl)
     
 let () =
   let in_file = Sys.argv.(1) in
