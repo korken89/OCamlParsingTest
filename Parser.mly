@@ -30,23 +30,23 @@ base_structure:
   ;
 
 get_prio:
-  | PRIO; COLON; pri = INT                            { pri }
-  | err = not_allowed_mid; COLON { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^ "'")) }
+  | PRIO; COLON; pri = INT                            { pri                                                                         }
+  | err = not_allowed_mid; COLON { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^ "', expected 'isr_max_priorities'")) }
   ;
 
 get_stackid:
-  | STACK_ID; COLON; sid = STRING                     { (K, sid) }
-  | err = not_allowed_mid; COLON { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^ "'")) }
+  | STACK_ID; COLON; sid = STRING                     { (K, sid)                                                                      }
+  | err = not_allowed_mid; COLON { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^ "', expected 'stack_end_identifier'")) }
   ;
 
 get_corev:
-  | CORE_VECTORS; COLON; LC; vecs = get_vectors; RC   { vecs }
-  | err = not_allowed_mid; COLON { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^ "'")) }
+  | CORE_VECTORS; COLON; LC; vecs = get_vectors; RC   { vecs                                                                      }
+  | err = not_allowed_mid; COLON { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^ "', expected 'core_isr_vectors'")) }
   ;
 
 get_vendorv:
-  | VENDOR_VECTORS; COLON; LC; vecs = get_vectors; RC { vecs }
-  | err = not_allowed_mid; COLON { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^ "'")) }
+  | VENDOR_VECTORS; COLON; LC; vecs = get_vectors; RC { vecs                                                                        }
+  | err = not_allowed_mid; COLON { raise (SyntaxError ("Unexpected identifier used: '" ^ err ^ "', expected 'vendor_isr_vectors'")) }
   ;
 
 get_vectors:
