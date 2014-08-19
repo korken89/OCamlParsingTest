@@ -33,7 +33,7 @@ rule lexVectors = parse
   | "free"                 { FREE                                                                          }
   | "used"                 { USED                                                                          }
   | id as i                { ID (i)                                                                        }
-  | ('&'? id as s)         { STRING (s)                                                                    }
+  | ('&' id as s)          { STRING (s)                                                                    }
   | int id                 { raise (SyntaxError ("Unexpected identifier: '" ^ Lexing.lexeme lexbuf ^ "'")) }
   | '{'                    { LC                                                                            }
   | '}'                    { RC                                                                            }
