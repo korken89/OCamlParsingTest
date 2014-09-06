@@ -11,7 +11,7 @@ let loop filename =
   let inBuffer = open_in filename in
   let lexbuf = Lexing.from_channel inBuffer in
   lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = filename };
-  try 
+  try
     let res = VectorParser.parseVectors VectorLexer.lexVectors lexbuf in
     match res with
       | None     -> print_string "Nothing!"
@@ -20,9 +20,9 @@ let loop filename =
     | Error.SyntaxError msg -> print_string ("Syntax error: " ^ msg ^
                                              " in " ^ (print_position lexbuf) ^ nl)
     | VectorParser.Error    -> print_string ("Syntax error in " ^ (print_position lexbuf) ^
-                                    " - Is there a missplaced comma?" ^ nl)
-    
+                                    " - Is there a misplaced comma?" ^ nl)
+
 let () =
   let in_file = Sys.argv.(1) in
     loop in_file
-    
+
