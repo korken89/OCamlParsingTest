@@ -1,7 +1,7 @@
 {
   (* Tokens defined in Parser.mly *)
 
-  open VectorParser   
+  open VectorParser
   open Lexing
   open Common
   open Error
@@ -10,12 +10,12 @@
 (* Regular expressions *)
 let white     = [' ' '\t']+
 let newline   = '\r' | '\n' | "\r\n"
-let id        = ['A'-'Z' 'a'-'z' '_']['0'-'9' 'A'-'Z' 'a'-'z' '_']*  
+let id        = ['A'-'Z' 'a'-'z' '_']['0'-'9' 'A'-'Z' 'a'-'z' '_']*
 let digit     = ['0'-'9']+
 let hex_digit = ['0'-'9' 'a'-'f' 'A'-'F']+
 let bin_digit = ['0'-'1']+
 let int       = '-'? digit
-let hex       = "0x" hex_digit  
+let hex       = "0x" hex_digit
 let binary    = "0b" bin_digit
 
 (* Lexing rules *)

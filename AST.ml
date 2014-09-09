@@ -3,7 +3,7 @@ ISR type format of the RTFM-core compiler.
 *)
 type isr_type =
   | K (* reserved by the RTFM kernel                *)
-  | R (* reserved by ARM                            *) 
+  | R (* reserved by ARM                            *)
   | O (* overridable but has default implementation *)
   | F (* free to use by the application             *)
   | U (* used by the application                    *)

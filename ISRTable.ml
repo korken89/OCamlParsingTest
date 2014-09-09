@@ -17,4 +17,3 @@ Converts the vector_table to the RTFM format.
 @return The converted max priorities.
 *)
 let get_RTFM_max_prio vt = vt.max_priorities
-      
